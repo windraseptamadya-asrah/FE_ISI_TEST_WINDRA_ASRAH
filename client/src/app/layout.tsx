@@ -4,6 +4,7 @@ import "./globals.css";
 import StoreProvider from "@/lib/scripts/store/store-provider";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import { Toaster } from "react-hot-toast";
 config.autoAddCss = false;
 
 export const metadata: Metadata = {
@@ -18,8 +19,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
-        <StoreProvider>{children}</StoreProvider>
+      <body>
+        <StoreProvider>
+          <Toaster position="top-center" reverseOrder={false} gutter={8} />
+          <main className="p-4 min-h-screen">{children}</main>
+        </StoreProvider>
       </body>
     </html>
   );

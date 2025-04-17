@@ -2,8 +2,9 @@ import { User } from "@/lib/types/user";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { backend, IResponse } from "@scripts/backend";
 import { AxiosResponse } from "axios";
+import { deleteCookie, setCookie, getCookie } from "cookies-next";
 
-interface UserState {
+export interface UserState {
   domReady: boolean;
   user: User | null;
   token: string | null;
@@ -15,46 +16,60 @@ const initialState: UserState = {
   token: null,
 };
 
-export const loginUser = createAsyncThunk<User, { username: string, password: string }>(
+export const loginUser = createAsyncThunk<User, { token: string }>(
   "user/loginUser",
-  async ({ username, password }, { dispatch }) => {
-    return await backend.post("/login", { username, password })
-    .then(async (res: AxiosResponse<IResponse<{
-      token: string;
-    }>>) => {
-      const token = res.data.data?.token ?? "";
-      dispatch(setToken(token));
-      localStorage.setItem("token", token);
+  async ({ token }, { dispatch, rejectWithValue }) => {
+    dispatch(setToken(token));
+    setCookie("authorization", `Bearer ${token}`, {
+      maxAge: 60 * 60 * 12, // 12 hours
+    });
 
-      return await backend.get("/user", {
+    try {
+      const res: AxiosResponse<IResponse<User>> = await backend.get("/user", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }).then((res) => {
-        dispatch(setUser(res.data.data));
-        return res.data.data;
       });
-
-    })
+      if (!res.data.data) {
+        throw new Error("User data is missing");
+      }
+      dispatch(setUser(res.data.data));
+      return res.data.data;
+    } catch (error) {
+      clearAuthState();
+      return rejectWithValue((error as Error).message);
+    } finally {
+      dispatch(setDomReady(true));
+    }
   }
 );
 
-export const checkUser = createAsyncThunk<User, void>("user/checkUser", async (_, { dispatch, rejectWithValue }) => {
-  const token = localStorage.getItem("token");
-  if (!token) return rejectWithValue("No token found");
-  try {
-    const res = await backend.get("/user", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    dispatch(setUser(res.data.data));
-    dispatch(setDomReady(true));
-    return res.data.data;
-  } catch (error) {
-    return rejectWithValue(error);
+export const checkUser = createAsyncThunk<User, void>(
+  "user/checkUser",
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      const auth = await getCookie("authorization");
+      if (!auth) {
+        throw new Error("Authorization token is missing");
+      }
+      const res: AxiosResponse<IResponse<User>> = await backend.get("/user", {
+        headers: {
+          Authorization: auth,
+        },
+      });
+      if (!res.data.data) {
+        throw new Error("User data is missing");
+      }
+      dispatch(setUser(res.data.data));
+      return res.data.data;
+    } catch (error) {
+      clearAuthState();
+      return rejectWithValue((error as Error).message);
+    } finally {
+      dispatch(setDomReady(true));
+    }
   }
-});
+);
 
 const userSlice = createSlice({
   name: "user",
@@ -72,8 +87,8 @@ const userSlice = createSlice({
     clearAuthState: (state) => {
       state.user = null;
       state.token = null;
-      localStorage.removeItem("token");
-    }
+      deleteCookie("authorization");
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loginUser.fulfilled, (state, action) => {
@@ -82,8 +97,9 @@ const userSlice = createSlice({
     builder.addCase(checkUser.fulfilled, (state, action) => {
       state.user = action.payload;
     });
-  }
-})
+  },
+});
 
-export const { setDomReady, setUser, setToken, clearAuthState } = userSlice.actions;
+export const { setDomReady, setUser, setToken, clearAuthState } =
+  userSlice.actions;
 export default userSlice.reducer;

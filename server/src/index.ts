@@ -1,14 +1,15 @@
 import dotenv from "dotenv";
 import express from "express";
+import cors from "cors";
 import { AppDataSource } from "./data-source";
 import { router as root } from "./routes";
 import { errorHandler } from "./views/error";
 
 dotenv.config();
-
 const app = express();
 const port = Number(process.env.APP_PORT);
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
