@@ -59,12 +59,12 @@ export default function Login() {
   };
 
   return (
-    <div className="flex justify-center items-center w-full h-full">
-      <div className="lg:max-w-6/12 w-full h-full flex flex-col items-center">
-        <h1 className="text-3xl font-bold">Login to Todo</h1>
+    <div className="flex justify-center items-center w-full h-screen">
+      <div className="max-w-[640px] w-full h-full flex flex-col justify-center items-center">
+        <h1 className="text-3xl font-bold my-4">Login to Todo</h1>
         <form
           onSubmit={handleSubmit(handleLogin)}
-          className="mt-4 flex flex-col gap-2"
+          className="mt-4 flex flex-col gap-4 w-full"
         >
           <Input
             control={control}

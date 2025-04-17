@@ -1,7 +1,7 @@
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button as HButton } from "@headlessui/react";
 import { ComponentPropsWithRef, ReactNode } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleNotch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 type ButtonProps = ComponentPropsWithRef<"button"> &
   ComponentPropsWithRef<"a"> & {
@@ -9,9 +9,14 @@ type ButtonProps = ComponentPropsWithRef<"button"> &
     children: ReactNode;
   };
 
-export default function Button({ children, loading, ...props }: Readonly<ButtonProps>) {
+export default function Button({
+  children,
+  loading,
+  ...props
+}: Readonly<ButtonProps>) {
   return (
     <HButton
+      {...props}
       as={props.href ? "a" : "button"}
       disabled={props.disabled || loading}
       type={props.type}
@@ -20,7 +25,9 @@ export default function Button({ children, loading, ...props }: Readonly<ButtonP
       }`}
       style={props.style}
     >
-      {loading && <FontAwesomeIcon icon={faCircleNotch} spin className="mr-2" /> }
+      {loading && (
+        <FontAwesomeIcon icon={faCircleNotch} spin className="mr-2" />
+      )}
       {children}
     </HButton>
   );

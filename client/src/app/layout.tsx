@@ -22,7 +22,7 @@ export default function RootLayout({
       <body>
         <StoreProvider>
           <Toaster position="top-center" reverseOrder={false} gutter={8} />
-          <main className="p-4 min-h-screen">{children}</main>
+          {children}
         </StoreProvider>
       </body>
     </html>

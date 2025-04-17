@@ -23,7 +23,7 @@ export default function Input<T extends FieldValues = FieldValues>({
           {...field}
           {...props}
           value={field.value ?? ""}
-          className={`rounded-sm border border-neutral-500 outline-none px-2 py-1 ${props.className}`}
+          className={`rounded-sm border w-full border-neutral-500 outline-none px-2 py-1 ${props.className}`}
         />
       )}
     />
