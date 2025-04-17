@@ -12,7 +12,7 @@ export class CreateUserDto {
   password: string;
 
   @IsString({ message: "Role must be a string" })
-  role: string = "team";
+  role: "team" | "lead" = "team";
 }
 
 export class LoginDto {

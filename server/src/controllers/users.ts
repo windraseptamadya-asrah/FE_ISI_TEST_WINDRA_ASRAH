@@ -55,7 +55,7 @@ export class UserController {
         throw new BadRequestError("Username and password are required");
 
       const user = await Query()
-        .select("user")
+        .select(["user.id", "user.username", "user.password", "user.role"])
         .from(Users, "user")
         .where("user.username = :username", { username })
         .getOne();
@@ -71,6 +71,34 @@ export class UserController {
       });
 
       return generateResponse(res, { token });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getUsers(req: Request, res: Response, next: Function) {
+    try {
+      const users = await Query()
+        .select("user")
+        .from(Users, "user")
+        .getMany();
+      return generateResponse(res, users);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getSelf(req: Request, res: Response, next: Function) {
+    try {
+      if (!req.user) throw new UnauthorizedError("User is not authenticated");
+      const user = await Query()
+        .select("user")
+        .from(Users, "user")
+        .where("user.id = :id", { id: req.user.id })
+        .getOne();
+      if (!user) throw new UnauthorizedError("User not found");
+
+      return generateResponse(res, user);
     } catch (error) {
       next(error);
     }
