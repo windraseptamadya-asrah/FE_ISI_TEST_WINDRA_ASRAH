@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, ReactNode, useState } from "react";
 import {
   Description,
   Dialog,
@@ -7,6 +7,8 @@ import {
   Transition,
   TransitionChild,
 } from "@headlessui/react";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Modal({
   isOpen,
@@ -21,7 +23,7 @@ export default function Modal({
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  description: string;
+  description: ReactNode;
   onConfirm: () => Promise<void>;
   confirmText?: string;
   cancelText?: string;
@@ -93,7 +95,7 @@ export default function Modal({
                   disabled={isLoading}
                 >
                   {isLoading && (
-                    <span className="loading loading-spinner"></span>
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="mr-2" />
                   )}{" "}
                   {confirmText}
                 </button>

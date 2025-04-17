@@ -10,8 +10,8 @@ import { Users } from "../entities/users";
 
 export class TodoController {
   private static validateStatus(status: string) {
-    if (status && (status !== "Not Started" && status !== "In Progress" && status !== "Done" && status !== "Reject")) {
-      throw new BadRequestError("Status must be either Not Started, In Progress, Done or Reject");
+    if (status && (status !== "Not Started" && status !== "On Progress" && status !== "Done" && status !== "Reject")) {
+      throw new BadRequestError("Status must be either Not Started, On Progress, Done or Reject");
     }
   }
 
@@ -60,7 +60,7 @@ export class TodoController {
           "created_user.name AS created_by_name",
         ])
         .where("todos.id = :id", { id: req.params.id })
-        .getRawMany();
+        .getRawOne();
         return generateResponse(res, todos);
     } catch (err) {
       next(err);

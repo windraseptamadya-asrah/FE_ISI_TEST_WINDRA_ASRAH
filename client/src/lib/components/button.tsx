@@ -20,7 +20,7 @@ export default function Button({
       as={props.href ? "a" : "button"}
       disabled={props.disabled || loading}
       type={props.type}
-      className={`bg-black hover:bg-neutral-700 cursor-pointer data-[disabled]:bg-neutral-700 data-[disabled]:cursor-not-allowed text-white px-4 py-2 rounded transition duration-200 ease-in-out ${
+      className={`bg-black hover:bg-neutral-700 cursor-pointer data-[disabled]:opacity-20 data-[disabled]:!bg-black data-[disabled]:cursor-not-allowed text-white px-4 py-2 rounded transition duration-200 ease-in-out ${
         props.className ? " " + props.className : ""
       }`}
       style={props.style}
