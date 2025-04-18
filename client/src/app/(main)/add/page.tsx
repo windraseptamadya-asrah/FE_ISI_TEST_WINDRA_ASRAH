@@ -39,8 +39,9 @@ export default function AddPage() {
     }).then(() => {
       toast.success("Todo added successfully");
       router.push("/");
+      router.refresh();
     }).catch((err) => {
-      toast.error(err.response.data.message || "Failed to add todo");
+      toast.error(err.response.data.message ?? "Failed to add todo");
     }).finally(() => {
       setLoading(false);
     });
