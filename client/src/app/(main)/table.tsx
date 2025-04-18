@@ -94,6 +94,7 @@ export default function Table({ data }: Readonly<{ data: Todo[] }>) {
             <th>Description</th>
             <th>Assigned to</th>
             <th>Status</th>
+            <th>Deadline</th>
             <th>Created at</th>
             <th>Updated at</th>
             <th>Action</th>
@@ -109,6 +110,7 @@ export default function Table({ data }: Readonly<{ data: Todo[] }>) {
                 {todo.assigned_to_name ?? "Not assigned"}
               </td>
               <td className="px-2 py-3">{todo.status}</td>
+              <td className="px-2 py-3">{dayjs(todo.deadline).format("DD MMM YYYY")}</td>
               <td className="px-2 py-3">
                 {dayjs(todo.createdAt).format("DD MMM YYYY")}
               </td>
