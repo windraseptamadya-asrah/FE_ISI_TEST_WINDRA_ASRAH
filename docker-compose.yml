@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  server:
+    build:
+      context: .
+      dockerfile: ./server/dockerfile
+    ports:
+      - "80:80"
+  client:
+    build:
+      context: .
+      dockerfile: ./client/dockerfile
+    ports:
+      - "3000:3000"
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: teheperinko
+      POSTGRES_DB: todo_db
+    ports:
+      - "5432:5432"
